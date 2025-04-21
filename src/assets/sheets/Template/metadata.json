@@ -1,0 +1,12 @@
+{
+    "id": 0,
+    "name": {
+        "family": "名字",
+        "last": "名前",
+        "family_kana": "みょうじ",
+        "last_kana": "なまえ"
+    },
+    "color": "#000000",
+    "thumbnail": "/assets/sheets/Template/1.png",
+    "draft": true
+}
