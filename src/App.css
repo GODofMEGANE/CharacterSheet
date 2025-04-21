@@ -1,20 +1,37 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
-.img-square {
+.flex{
   display: flex;
+}
+
+.entry{
+  border: 2px solid #bbbbbb;
+  margin: 0;
+}
+
+.text-content{
+  width: 60vw;
+  text-align: left;
+  margin: 0 0 0 20px;
+}
+
+.entry-title{
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.img-square {
   justify-content: center;
   align-items: center;
-  margin:0 auto 5%;
 }
 
 .img-square img{
-  width: 200px;
-  height: 200px;
+  width: 30vw;
+  height: 30vw;
   object-fit: contain;
   border: 2px solid #bbbbbb;
 }

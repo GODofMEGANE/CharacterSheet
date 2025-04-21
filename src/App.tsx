@@ -27,12 +27,13 @@ function App() {
   return (
     <div id='character-entries'>
       {characters.map((character, index) => (
-        <div id='character-entry' key={index}>
+        <div id='character-entry' className='flex entry' key={index}>
           <div className="img-square">
             <img src={character.thumbnail} />
           </div>
-          <h2>{character.name.family}{character.name.last}</h2>
-          {character.thumbnail}
+          <div className='text-content'>
+            <p className='entry-title'>{character.name.family}{character.name.last}</p>
+          </div>
         </div>
       ))}
     </div>
