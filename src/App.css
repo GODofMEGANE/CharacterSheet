@@ -24,6 +24,11 @@
   margin: 0;
 }
 
+.entry-kana{
+  font-size: 1rem;
+  margin: 0;
+}
+
 .img-square {
   justify-content: center;
   align-items: center;
@@ -32,6 +37,7 @@
 .img-square img{
   width: 30vw;
   height: 30vw;
-  object-fit: contain;
-  border: 2px solid #bbbbbb;
+  margin: 10px;
+  object-fit: cover;
+  object-position: 50% 0%;
 }
