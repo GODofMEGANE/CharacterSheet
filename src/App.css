@@ -8,7 +8,8 @@
 }
 
 .entry {
-    border: 2px solid #bbbbbb;
+    width: 100vw;
+    border: -2px solid #bbbbbb;
     margin: 0;
     background: linear-gradient(60deg, #666666 50%, var(--color-background) 50%);
     background-size: 250% 250%;

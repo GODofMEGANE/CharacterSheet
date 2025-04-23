@@ -6,6 +6,7 @@ function App() {
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzK_ydizzOWf8bdQgJ1zuqS2K3fzhGxnwZZohcuyYGiesF3N5-1tIAK7FxtV5bl_fX-/exec?path=";
     const [characters, setCharacters] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [expandIndex, setExpandIndex] = useState(null);
 
     useEffect(() => {
         fetch(`${GAS_API_URL}list`).then(res => res.json()).then(data => {
@@ -26,9 +27,10 @@ function App() {
     }
     return (
         <div id='character-entries'>
+            <div>{expandIndex}</div>
             {characters.map((character, index) => (
-                <div id='character-entry' className='flex entry' key={index} style={{ '--color-background': adjustShade(character.color, 0.5) } as React.CSSProperties}>
-                    <div className="img-square" style={{ '--color-background-accent': adjustShade(character.color, 0.5) } as React.CSSProperties}>
+                <div id='character-entry' className='flex entry' key={index} style={{ '--color-background': adjustShade(character.color, 0.5) } as React.CSSProperties} onClick={()=>setExpandIndex(index)}>
+                    <div className="img-square" style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
                         <img src={character.thumbnail} />
                     </div>
                     <div className='text-content'>
