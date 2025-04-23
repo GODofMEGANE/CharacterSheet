@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
+import { Radar } from 'react-chartjs-2';
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+
 import './App.css'
 import { adjustShade, adjustTint, getTextColor } from './utils';
 
@@ -7,6 +11,17 @@ function App() {
     const [characters, setCharacters] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [expandIndex, setExpandIndex] = useState<number>(-1);
+
+    interface ChartData {
+        labels: string[];
+        datasets: {
+            label: string;
+            data: number[];
+            backgroundColor: string;
+            borderColor: string;
+            borderWidth: number;
+        }[];
+    }
 
     useEffect(() => {
         fetch(`${GAS_API_URL}list`).then(res => res.json()).then(data => {
@@ -28,8 +43,20 @@ function App() {
     return (
         <div id='character-entries'>
             <div>{expandIndex}</div>
-            {characters.map((character, index) => (
-                <div id='character-entry' className='entry' key={index} style={{ '--color-background': adjustShade(character.color, 0.5), '--color-background-gray': adjustTint(adjustShade(character.color, 0.5), 0.5) } as React.CSSProperties}>
+            {characters.map((character, index) => {
+                const chartdata: ChartData = {
+                    labels: character.chart.map((chart: { name: string, value: number }) => chart.name),
+                    datasets: [
+                        {
+                            label: `${character.name}のレーダーチャート`,
+                            data: character.chart.map((chart: { name: string, value: number }) => chart.value),
+                            backgroundColor: adjustTint(character.color, 0.5),
+                            borderColor: adjustShade(character.color, 0.8),
+                            borderWidth: 1,
+                        },
+                    ],
+                };
+                return (<div id='character-entry' className='entry' key={index} style={{ '--color-background': adjustShade(character.color, 0.5), '--color-background-gray': adjustTint(adjustShade(character.color, 0.5), 0.5) } as React.CSSProperties}>
                     <div className='flex' onClick={() => { index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1) }}>
                         <div className="img-square" style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
                             <img src={`https://lh3.googleusercontent.com/d/${character.thumbnail}`} />
@@ -41,7 +68,8 @@ function App() {
                     </div>
                     {index === expandIndex && (
                         <div className='entry-description' style={{ '--color-background': adjustTint(character.color, 0.8), '--color-text': getTextColor(adjustTint(character.color, 0.8)) } as React.CSSProperties}>
-                            {character.memo.map((memo: {category: string, content: string}, index: number) => (
+                            <Radar data={chartdata} />
+                            {character.memo.map((memo: { category: string, content: string }, index: number) => (
                                 <div key={`${index}-memo`}>
                                     <p key={`${index}-category`}>{memo.category}</p>
                                     <p className='text' key={`${index}-content`}>{memo.content}</p>
@@ -50,7 +78,8 @@ function App() {
                         </div>
                     )}
                 </div>
-            ))}
+                )
+            })}
         </div>
     )
 }
