@@ -44,6 +44,9 @@ function App() {
         <div id='character-entries'>
             <div>{expandIndex}</div>
             {characters.map((character, index) => {
+                if(character.draft){
+                    return;
+                }
                 const chartdata: ChartData = {
                     labels: character.chart.map((chart: { name: string, value: number }) => chart.name),
                     datasets: [
