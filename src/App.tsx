@@ -62,7 +62,7 @@ function App() {
                             <img src={`https://lh3.googleusercontent.com/d/${character.thumbnail}`} />
                         </div>
                         <div className='text-content'>
-                            <p className='entry-title' style={{ '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name}</p>
+                            <p className='entry-title' style={{fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)`, '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name}</p>
                             <p className='entry-kana' style={{ '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name_kana}</p>
                         </div>
                     </div>
