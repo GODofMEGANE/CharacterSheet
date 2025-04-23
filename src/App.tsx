@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css'
-import { adjustShade, adjustTint } from './utils';
+import { adjustShade, adjustTint, getTextColor } from './utils';
 
 function App() {
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzK_ydizzOWf8bdQgJ1zuqS2K3fzhGxnwZZohcuyYGiesF3N5-1tIAK7FxtV5bl_fX-/exec?path=";
     const [characters, setCharacters] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [expandIndex, setExpandIndex] = useState(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [expandIndex, setExpandIndex] = useState<number>(-1);
 
     useEffect(() => {
         fetch(`${GAS_API_URL}list`).then(res => res.json()).then(data => {
@@ -29,14 +29,26 @@ function App() {
         <div id='character-entries'>
             <div>{expandIndex}</div>
             {characters.map((character, index) => (
-                <div id='character-entry' className='flex entry' key={index} style={{ '--color-background': adjustShade(character.color, 0.5) } as React.CSSProperties} onClick={()=>setExpandIndex(index)}>
-                    <div className="img-square" style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
-                        <img src={character.thumbnail} />
+                <div id='character-entry' className='entry' key={index} style={{ '--color-background': adjustShade(character.color, 0.5), '--color-background-gray': adjustTint(adjustShade(character.color, 0.5), 0.5) } as React.CSSProperties}>
+                    <div className='flex' onClick={() => { index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1) }}>
+                        <div className="img-square" style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
+                            <img src={`https://lh3.googleusercontent.com/d/${character.thumbnail}`} />
+                        </div>
+                        <div className='text-content'>
+                            <p className='entry-title' style={{ '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name}</p>
+                            <p className='entry-kana' style={{ '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name_kana}</p>
+                        </div>
                     </div>
-                    <div className='text-content'>
-                        <p className='entry-title'>{character.name.family}{character.name.last}</p>
-                        <p className='entry-kana'>{character.name.family_kana}{character.name.last_kana}</p>
-                    </div>
+                    {index === expandIndex && (
+                        <div className='entry-description' style={{ '--color-background': adjustTint(character.color, 0.8), '--color-text': getTextColor(adjustTint(character.color, 0.8)) } as React.CSSProperties}>
+                            {character.memo.map((memo: {category: string, content: string}, index: number) => (
+                                <div key={`${index}-memo`}>
+                                    <p key={`${index}-category`}>{memo.category}</p>
+                                    <p className='text' key={`${index}-content`}>{memo.content}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             ))}
         </div>

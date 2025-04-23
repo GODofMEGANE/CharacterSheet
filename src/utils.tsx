@@ -12,6 +12,12 @@ export function adjustTint(hex: string, tint: number): string {
     return `#${toHex(color.r)}${toHex(color.g)}${toHex(color.b)}`;
 }
 
+export function getTextColor(hex: string): string {
+    const color = convertHexToRgb(hex);
+    const brightness = (color.r * 299 + color.g * 587 + color.b * 114) / 1000;
+    return brightness > 125 ? '#000000' : '#FFFFFF';
+}
+
 function convertHexToRgb(hex: string): { r: number, g: number, b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (!result) throw new Error("Invalid hex color");
