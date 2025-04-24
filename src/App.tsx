@@ -47,6 +47,9 @@ function App() {
                 if (character.draft) {
                     return;
                 }
+                if (character.images.length == 0) {
+                    character.images.push(character.thumbnail)
+                }
 
                 const css_vars = {
                     '--color': character.color,
