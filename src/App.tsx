@@ -4,7 +4,7 @@ import { Radar } from 'react-chartjs-2';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 import './App.css'
-import { fixImageUrl, adjustShade, adjustTint, getTextColor } from './utils';
+import { fixImageUrl, adjustShade, adjustTint } from './utils';
 
 function App() {
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzK_ydizzOWf8bdQgJ1zuqS2K3fzhGxnwZZohcuyYGiesF3N5-1tIAK7FxtV5bl_fX-/exec?path=";
