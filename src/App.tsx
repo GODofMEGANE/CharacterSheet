@@ -71,6 +71,11 @@ function App() {
                     </div>
                     {index === expandIndex && (
                         <div className='entry-description' style={{ '--color-background': adjustTint(character.color, 0.8), '--color-text': getTextColor(adjustTint(character.color, 0.8)) } as React.CSSProperties}>
+							{character.images.map((image: string, index: number) => (
+                                <div className="img-area" key={`${index}-img`} style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
+                                    <img src={`https://lh3.googleusercontent.com/d/${image}`} />
+                                </div>
+							))}
                             <Radar data={chartdata} />
                             {character.memo.map((memo: { category: string, content: string }, index: number) => (
                                 <div key={`${index}-memo`}>
