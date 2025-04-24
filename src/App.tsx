@@ -44,7 +44,7 @@ function App() {
         <div id='character-entries'>
             <div>{expandIndex}</div>
             {characters.map((character, index) => {
-                if(character.draft){
+                if (character.draft) {
                     return;
                 }
                 const chartdata: ChartData = {
@@ -65,22 +65,26 @@ function App() {
                             <img src={`https://lh3.googleusercontent.com/d/${character.thumbnail}`} />
                         </div>
                         <div className='text-content'>
-                            <p className='entry-title' style={{fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)`, '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name}</p>
+                            <p className='entry-title' style={{ fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)`, '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name}</p>
                             <p className='entry-kana' style={{ '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name_kana}</p>
                         </div>
                     </div>
                     {index === expandIndex && (
                         <div className='entry-description' style={{ '--color-background': adjustTint(character.color, 0.8), '--color-text': getTextColor(adjustTint(character.color, 0.8)) } as React.CSSProperties}>
-							{character.images.map((image: string, index: number) => (
-                                <div className="img-area" key={`${index}-img`} style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
-                                    <img src={`https://lh3.googleusercontent.com/d/${image}`} />
+                            <div className='flex'>
+                                {character.images.map((image: string, index: number) => (
+                                    <div className="img-area" key={`${index}-img`} style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
+                                        <img src={`https://lh3.googleusercontent.com/d/${image}`} />
+                                    </div>
+                                ))}
+                                <div className="radar">
+                                    <Radar data={chartdata} />
                                 </div>
-							))}
-                            <Radar data={chartdata} />
+                            </div>
                             {character.memo.map((memo: { category: string, content: string }, index: number) => (
-                                <div key={`${index}-memo`}>
-                                    <p key={`${index}-category`}>{memo.category}</p>
-                                    <p className='text' key={`${index}-content`}>{memo.content}</p>
+                                <div className='memo' key={`${index}-memo`}>
+                                    <p className='text-category' key={`${index}-category`}>{memo.category}</p>
+                                    <p className='text-content' key={`${index}-content`}>{memo.content}</p>
                                 </div>
                             ))}
                         </div>
