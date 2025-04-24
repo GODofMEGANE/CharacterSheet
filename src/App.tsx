@@ -4,7 +4,7 @@ import { Radar } from 'react-chartjs-2';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 import './App.css'
-import { adjustShade, adjustTint, getTextColor } from './utils';
+import { fixImageUrl, adjustShade, adjustTint, getTextColor } from './utils';
 
 function App() {
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzK_ydizzOWf8bdQgJ1zuqS2K3fzhGxnwZZohcuyYGiesF3N5-1tIAK7FxtV5bl_fX-/exec?path=";
@@ -47,44 +47,62 @@ function App() {
                 if (character.draft) {
                     return;
                 }
+
+                const css_vars = {
+                    '--color': character.color,
+                    '--color-background': adjustTint(adjustShade(character.color, 0.5), 0.5),
+                    '--color-background-gray': adjustTint(adjustShade(character.color, 0.5), 0.5),
+                    '--color-background-accent': adjustShade(character.color, 0.5),
+                    '--color-shadow': adjustShade(character.color, 0.7),
+                    '--color-text': "#ffffff",
+                };
+
                 const chartdata: ChartData = {
                     labels: character.chart.map((chart: { name: string, value: number }) => chart.name),
                     datasets: [
                         {
                             label: `${character.name}のレーダーチャート`,
                             data: character.chart.map((chart: { name: string, value: number }) => chart.value),
-                            backgroundColor: adjustTint(character.color, 0.5),
-                            borderColor: adjustShade(character.color, 0.8),
+                            backgroundColor: css_vars['--color'],
+                            borderColor: css_vars['--color-shadow'],
                             borderWidth: 1,
                         },
                     ],
                 };
-                return (<div id='character-entry' className='entry' key={index} style={{ '--color-background': adjustShade(character.color, 0.5), '--color-background-gray': adjustTint(adjustShade(character.color, 0.5), 0.5) } as React.CSSProperties}>
-                    <div className='flex' onClick={() => { index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1) }}>
-                        <div className="img-square" style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
-                            <img src={`https://lh3.googleusercontent.com/d/${character.thumbnail}`} />
+                return (<div id='character-entry' key={index} style={css_vars as React.CSSProperties}>
+                    <div className='flex entry' onClick={() => { index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1) }}>
+                        <div className="img-square">
+                            <img src={fixImageUrl(character.thumbnail)} />
                         </div>
                         <div className='text-content'>
-                            <p className='entry-title' style={{ fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)`, '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name}</p>
-                            <p className='entry-kana' style={{ '--color-text': getTextColor(adjustShade(character.color, 0.5)) } as React.CSSProperties}>{character.name_kana}</p>
+                            <p className='entry-title' style={{ fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)` } as React.CSSProperties}>{character.name}</p>
+                            <p className='entry-kana'>{character.name_kana}</p>
                         </div>
                     </div>
                     {index === expandIndex && (
-                        <div className='entry-description' style={{ '--color-background': adjustTint(character.color, 0.8), '--color-text': getTextColor(adjustTint(character.color, 0.8)) } as React.CSSProperties}>
+                        <div className='entry-description'>
                             <div className='flex'>
                                 {character.images.map((image: string, index: number) => (
-                                    <div className="img-area" key={`${index}-img`} style={{ '--color-background-accent': adjustShade(character.color, 0.8) } as React.CSSProperties}>
-                                        <img src={`https://lh3.googleusercontent.com/d/${image}`} />
+                                    <div className="img-area" key={`${index}-img`}>
+                                        <img src={fixImageUrl(image)} />
                                     </div>
                                 ))}
                                 <div className="radar">
-                                    <Radar data={chartdata} />
+                                    <Radar data={chartdata} options={{
+                                        responsive: true,
+                                        maintainAspectRatio: true,
+                                        aspectRatio: 1,
+                                    }} />
                                 </div>
                             </div>
                             {character.memo.map((memo: { category: string, content: string }, index: number) => (
                                 <div className='memo' key={`${index}-memo`}>
-                                    <p className='text-category' key={`${index}-category`}>{memo.category}</p>
-                                    <p className='text-content' key={`${index}-content`}>{memo.content}</p>
+                                    <p className='text-category' key={`${index}-category`}>
+                                        <span>{memo.category}</span>
+                                    </p>
+                                    <p className='text-content' key={`${index}-content`}>
+                                        <span>{memo.content}</span>
+                                    </p>
                                 </div>
                             ))}
                         </div>

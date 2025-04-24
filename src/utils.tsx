@@ -1,3 +1,10 @@
+export function fixImageUrl(url: string): string | undefined {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)|open\?id=([a-zA-Z0-9_-]+)/);
+    const id = match?.[1] ?? match?.[2];
+    if (!id) return undefined;
+    return `https://lh3.googleusercontent.com/d/${id}`;
+}
+
 export function adjustShade(hex: string, shade: number): string {
     const color = convertHexToRgb(hex);
     const mix = (c: number) => Math.round(c + (1 - c) * shade);
