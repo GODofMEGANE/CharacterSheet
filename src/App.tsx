@@ -59,27 +59,43 @@ function App() {
                     '--color-shadow': adjustShade(character.color, 0.7),
                     '--color-text': "#ffffff",
                 };
-                const chartdata: ChartData = {
-                    labels: character.chart.map((chart: { name: string, value: number }) => chart.name),
-                    datasets: [
-                        {
-                            label: `${character.name}のレーダーチャート`,
-                            data: character.chart.map((chart: { name: string, value: number }) => chart.value),
-                            backgroundColor: css_vars['--color'],
-                            borderColor: css_vars['--color-shadow'],
-                            borderWidth: 1,
-                        },
-                    ],
-                };
+                const chartdata = {
+                    type: 'radar',
+                    data: {
+                        labels: character.chart.map((chart: { name: string, value: number }) => chart.name),
+                        datasets: [
+                            {
+                                label: `${character.name}のレーダーチャート`,
+                                data: character.chart.map((chart: { name: string, value: number }) => chart.value),
+                                backgroundColor: css_vars['--color'],
+                                borderColor: css_vars['--color-shadow'],
+                                borderWidth: 1,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 1,
+                        scales: {r: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                backdropColor: 'transparent',
+                            },
+                        }}
+                    }
+                }
 
                 return (
 
                     <div id='character-entry' key={`${index}-character-entry`} style={css_vars as React.CSSProperties}>
-                        <div className='flex entry' style={(index === expandIndex ? { background: css_vars['--color-background-accent'] } : {})}
-                        onClick={(e) => {
-                            if(index !== expandIndex) e.currentTarget.scrollIntoView({behavior: 'smooth', block: 'start'});
-                            index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1);
-                        }}>
+                        <div className='flex entry' style={(index === expandIndex ? { backgroundPosition: 'right' } : {})}
+                            onClick={(e) => {
+                                if (index !== expandIndex) e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1);
+                            }}>
                             <div className="img-square" key={`${index}-img-square`}>
                                 <img src={fixImageUrl(character.thumbnail)} key={`${index}-thumbnail`} />
                             </div>
@@ -106,11 +122,7 @@ function App() {
                                         </div>
                                     ))}
                                     <div className="radar" key={`${index}-rader`}>
-                                        <Radar data={chartdata} key={`${index}-radercanvas`} options={{
-                                            responsive: true,
-                                            maintainAspectRatio: true,
-                                            aspectRatio: 1,
-                                        }} />
+                                        <Radar data={chartdata.data} key={`${index}-radercanvas`} options={chartdata.options} />
                                     </div>
                                 </div>
                                 {character.memo.map((memo: { category: string, content: string }, memo_index: number) => (
