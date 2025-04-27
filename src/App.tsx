@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import { motion } from "framer-motion";
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 import './App.css'
@@ -42,7 +43,6 @@ function App() {
     }
     return (
         <div id='character-entries'>
-            <div>{expandIndex}</div>
             {characters.map((character, index) => {
                 if (character.draft) {
                     return;
@@ -59,7 +59,6 @@ function App() {
                     '--color-shadow': adjustShade(character.color, 0.7),
                     '--color-text': "#ffffff",
                 };
-
                 const chartdata: ChartData = {
                     labels: character.chart.map((chart: { name: string, value: number }) => chart.name),
                     datasets: [
@@ -72,45 +71,62 @@ function App() {
                         },
                     ],
                 };
-                return (<div id='character-entry' key={index} style={css_vars as React.CSSProperties}>
-                    <div className='flex entry' onClick={() => { index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1) }}>
-                        <div className="img-square">
-                            <img src={fixImageUrl(character.thumbnail)} />
+
+                return (
+
+                    <div id='character-entry' key={`${index}-character-entry`} style={css_vars as React.CSSProperties}>
+                        <div className='flex entry' style={(index === expandIndex ? { background: css_vars['--color-background-accent'] } : {})}
+                        onClick={(e) => {
+                            if(index !== expandIndex) e.currentTarget.scrollIntoView({behavior: 'smooth', block: 'start'});
+                            index !== expandIndex ? setExpandIndex(index) : setExpandIndex(-1);
+                        }}>
+                            <div className="img-square" key={`${index}-img-square`}>
+                                <img src={fixImageUrl(character.thumbnail)} key={`${index}-thumbnail`} />
+                            </div>
+                            <div className='text-content'>
+                                <p className='entry-title' key={`${index}-entry-title`}
+                                    style={{ fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)` } as React.CSSProperties}>
+                                    {character.name}
+                                </p>
+                                <p className='entry-kana'>{character.name_kana}</p>
+                            </div>
                         </div>
-                        <div className='text-content'>
-                            <p className='entry-title' style={{ fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)` } as React.CSSProperties}>{character.name}</p>
-                            <p className='entry-kana'>{character.name_kana}</p>
-                        </div>
-                    </div>
-                    {index === expandIndex && (
-                        <div className='entry-description'>
-                            <div className='flex'>
-                                {character.images.map((image: string, index: number) => (
-                                    <div className="img-area" key={`${index}-img`}>
-                                        <img src={fixImageUrl(image)} />
+                        {index === expandIndex && (
+                            <motion.div className='entry-description' key={`${index}-entry-description`}
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.5, ease: "easeInOut" }}
+                                style={{ overflow: "hidden" }}>
+
+                                <div className='flex' key={`${index}-description-header`}>
+                                    {character.images.map((image: string, image_index: number) => (
+                                        <div className="img-area" key={`${index}-${image_index}-img-area`}>
+                                            <img src={fixImageUrl(image)} key={`${index}-${image_index}-image`} />
+                                        </div>
+                                    ))}
+                                    <div className="radar" key={`${index}-rader`}>
+                                        <Radar data={chartdata} key={`${index}-radercanvas`} options={{
+                                            responsive: true,
+                                            maintainAspectRatio: true,
+                                            aspectRatio: 1,
+                                        }} />
+                                    </div>
+                                </div>
+                                {character.memo.map((memo: { category: string, content: string }, memo_index: number) => (
+                                    <div className='memo' key={`${index}-${memo_index}-memo`}>
+                                        <p className='text-category' key={`${index}-${memo_index}-text-category`}>
+                                            <span>{memo.category}</span>
+                                        </p>
+                                        <p className='text-content' key={`${index}-${memo_index}-text-content`}>
+                                            <span>{memo.content}</span>
+                                        </p>
                                     </div>
                                 ))}
-                                <div className="radar">
-                                    <Radar data={chartdata} options={{
-                                        responsive: true,
-                                        maintainAspectRatio: true,
-                                        aspectRatio: 1,
-                                    }} />
-                                </div>
-                            </div>
-                            {character.memo.map((memo: { category: string, content: string }, index: number) => (
-                                <div className='memo' key={`${index}-memo`}>
-                                    <p className='text-category' key={`${index}-category`}>
-                                        <span>{memo.category}</span>
-                                    </p>
-                                    <p className='text-content' key={`${index}-content`}>
-                                        <span>{memo.content}</span>
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                            </motion.div>
+                        )}
+                    </div>
+
                 )
             })}
         </div>

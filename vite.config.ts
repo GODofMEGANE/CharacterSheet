@@ -8,4 +8,7 @@ export default defineConfig({
     outDir: 'docs',
   },
   base: './',
+  server: {
+    host: true
+  }
 })
