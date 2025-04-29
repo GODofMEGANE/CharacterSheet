@@ -22,9 +22,10 @@
 }
 
 .entry-text {
-    flex: 2;
+    flex: 2 1 0;
     display: flex;
     flex-direction: column;
+    margin-right: 10px;
 }
 
 .entry-title {
