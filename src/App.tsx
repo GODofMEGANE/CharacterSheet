@@ -13,17 +13,6 @@ function App() {
     const [loading, setLoading] = useState<boolean>(true);
     const [expandIndex, setExpandIndex] = useState<number>(-1);
 
-    interface ChartData {
-        labels: string[];
-        datasets: {
-            label: string;
-            data: number[];
-            backgroundColor: string;
-            borderColor: string;
-            borderWidth: number;
-        }[];
-    }
-
     useEffect(() => {
         fetch(`${GAS_API_URL}list`).then(res => res.json()).then(data => {
             setCharacters(data);
@@ -99,9 +88,8 @@ function App() {
                             <div className="img-square" key={`${index}-img-square`}>
                                 <img src={fixImageUrl(character.thumbnail)} key={`${index}-thumbnail`} />
                             </div>
-                            <div className='text-content'>
-                                <p className='entry-title' key={`${index}-entry-title`}
-                                    style={{ fontSize: `clamp(1rem, ${window.innerWidth * 0.6 / character.name.length}px, 3rem)` } as React.CSSProperties}>
+                            <div className='entry-text'>
+                                <p className='entry-title' key={`${index}-entry-title`}>
                                     {character.name}
                                 </p>
                                 <p className='entry-kana'>{character.name_kana}</p>
